@@ -47,7 +47,7 @@ class BitMEXWebsocket:
         wsURL = self.__get_url()
         self.logger.info("Connecting to %s" % wsURL)
         self.__connect(wsURL, symbol)
-        self.logger.info('Connected to WS-MS.')
+        self.logger.info('Connected to WS-MS-s.')
 
         # Connected. Wait for partials
         self.__wait_for_symbol(symbol)
