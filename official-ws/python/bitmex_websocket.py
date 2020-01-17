@@ -157,8 +157,10 @@ class BitMEXWebsocket:
         '''
 
         # You can sub to orderBookL2 for all levels, or orderBook10, orderBookL2_25 for top 10 levels & save bandwidth
-        symbolSubs = ["execution", "instrument", "order", "orderBookL2_25", "position", "quote", "trade"]
-        genericSubs = ["margin"]
+        #symbolSubs = ["instrument", "order", "orderBookL2_25", "position", "quote", "trade"]
+        #genericSubs = ["margin"]
+        symbolSubs = ["instrument", "orderBookL2_25", "position"]
+        genericSubs = []
 
         subscriptions = [sub + ':' + self.symbol for sub in symbolSubs]
         subscriptions += genericSubs
@@ -171,12 +173,12 @@ class BitMEXWebsocket:
     def __wait_for_account(self):
         '''On subscribe, this data will come down. Wait for it.'''
         # Wait for the keys to show up from the ws
-        while not {'margin', 'position', 'order', 'orderBookL2_25'} <= set(self.data):
+        while not {'position', 'orderBookL2_25'} <= set(self.data):
             sleep(0.1)
 
     def __wait_for_symbol(self, symbol):
         '''On subscribe, this data will come down. Wait for it.'''
-        while not {'instrument', 'trade', 'quote'} <= set(self.data):
+        while not {'instrument'} <= set(self.data):
             sleep(0.1)
 
     def __send_command(self, command, args=None):
