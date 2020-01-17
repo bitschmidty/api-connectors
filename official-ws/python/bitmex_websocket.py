@@ -47,7 +47,7 @@ class BitMEXWebsocket:
         wsURL = self.__get_url()
         self.logger.info("Connecting to %s" % wsURL)
         self.__connect(wsURL, symbol)
-        self.logger.info('Connected to WS.')
+        self.logger.info('Connected to WS-MS.')
 
         # Connected. Wait for partials
         self.__wait_for_symbol(symbol)
@@ -92,7 +92,7 @@ class BitMEXWebsocket:
 
     def market_depth(self):
         '''Get market depth (orderbook). Returns all levels.'''
-        return self.data['orderBookL2']
+        return self.data['orderBookL2_25']
 
     def open_orders(self, clOrdIDPrefix):
         '''Get all your open orders.'''
@@ -156,8 +156,8 @@ class BitMEXWebsocket:
         Most subscription topics are scoped by the symbol we're listening to.
         '''
 
-        # You can sub to orderBookL2 for all levels, or orderBook10 for top 10 levels & save bandwidth
-        symbolSubs = ["execution", "instrument", "order", "orderBookL2", "position", "quote", "trade"]
+        # You can sub to orderBookL2 for all levels, or orderBook10, orderBookL2_25 for top 10 levels & save bandwidth
+        symbolSubs = ["execution", "instrument", "order", "orderBookL2_25", "position", "quote", "trade"]
         genericSubs = ["margin"]
 
         subscriptions = [sub + ':' + self.symbol for sub in symbolSubs]
@@ -171,7 +171,7 @@ class BitMEXWebsocket:
     def __wait_for_account(self):
         '''On subscribe, this data will come down. Wait for it.'''
         # Wait for the keys to show up from the ws
-        while not {'margin', 'position', 'order', 'orderBookL2'} <= set(self.data):
+        while not {'margin', 'position', 'order', 'orderBookL2_25'} <= set(self.data):
             sleep(0.1)
 
     def __wait_for_symbol(self, symbol):
@@ -217,7 +217,7 @@ class BitMEXWebsocket:
 
                     # Limit the max length of the table to avoid excessive memory usage.
                     # Don't trim orders because we'll lose valuable state if we do.
-                    if table not in ['order', 'orderBookL2'] and len(self.data[table]) > BitMEXWebsocket.MAX_TABLE_LEN:
+                    if table not in ['order', 'orderBookL2_25'] and len(self.data[table]) > BitMEXWebsocket.MAX_TABLE_LEN:
                         self.data[table] = self.data[table][BitMEXWebsocket.MAX_TABLE_LEN // 2:]
 
                 elif action == 'update':
